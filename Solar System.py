@@ -34,6 +34,7 @@ class Planet:
     SCALE = 100 / AU # 1AU = 100 pixels
     TIMESTEP = 3600*24 # 1 day
     PROPORTION = 1.0001
+
     
     
     def __init__(self, x, y, radius, color, mass):
@@ -163,11 +164,12 @@ def main():
     planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
     
     # glTranslatef(0.0, 0.0, -5.0)
-    
+    moving = False
     while run:
         clock.tick(60)
         WIN.fill((0,0,0))
-        
+        print(moving)
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -177,6 +179,11 @@ def main():
                 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5: # wheel rolled down
                 Planet.SCALE -= Planet.SCALE/2 
+                
+            elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                moving = True
+            elif event.type == pygame.MOUSEBUTTONUP:
+                moving = False
                       
         for planet in planets:
             planet.update_position(planets)
