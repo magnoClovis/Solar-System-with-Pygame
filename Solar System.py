@@ -10,7 +10,7 @@ import math
 
 pygame.init()
 
-WIDTH, HEIGHT = 1920, 1035
+WIDTH, HEIGHT = 1080, 720
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 
 pygame.display.set_caption("Planet Simulation")
@@ -71,12 +71,13 @@ class Planet:
             pygame.draw.lines(win, self.color, False, updated_points)
             
             # Erasing the orbit lines after a certain length
-            # if len(self.orbit) > ((self.x**2)**0.5)*10*self.SCALE:
-            #     self.max_length = True
+            '''
+            if len(self.orbit) > ((self.x**2)**0.5)*10*self.SCALE:
+                 self.max_length = True
                 
-            # if self.max_length == True:
-            #     self.orbit.pop(0) # remove the line orbit as the moviment flows
-                
+            if self.max_length == True:
+                self.orbit.pop(0) # remove the line orbit as the moviment flows
+            '''
 
             
         pygame.draw.circle(win, self.color, (x,y), self.radius)
@@ -128,10 +129,10 @@ def main():
     
     # (x, y, radius, color, mass)
     
-    sun = Planet(0, 0, 40, YELLOW, 1.98892 * 10**30)
+    sun = Planet(0, 0, 35, YELLOW, 1.98892 * 10**30)
     sun.sun = True
     
-    mercury = Planet(0.387 * Planet.AU, 0, 8, DARK_GREY, 0.330 * 10**24)
+    mercury = Planet(0.387 * Planet.AU, 0, 3, DARK_GREY, 0.330 * 10**24)
     mercury.y_vel = -48.92 * 1000 # m/s
     
     
@@ -164,7 +165,7 @@ def main():
     planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
     
     # glTranslatef(0.0, 0.0, -5.0)
-    moving = False
+    moving = True
     while run:
         clock.tick(60)
         WIN.fill((0,0,0))
@@ -176,18 +177,41 @@ def main():
                 
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 4: # wheel rolled up
                 Planet.SCALE += Planet.SCALE/2 
-                
+                for planet in planets:
+                    planet.radius+=planet.radius/2
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5: # wheel rolled down
                 Planet.SCALE -= Planet.SCALE/2 
+                for planet in planets:
+                    planet.radius-=planet.radius/2
                 
             elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
-                moving = True
+                moving = False
+                while not moving:
+                    WIN.fill((0,0,0))
+                    for event in pygame.event.get():
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                            moving = True
+                        if event.type == pygame.MOUSEBUTTONDOWN and event.button == 4: # wheel rolled up
+                            Planet.SCALE += Planet.SCALE/2 
+                            for planet in planets:
+                                planet.radius+=planet.radius/2
+                        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 5: # wheel rolled down
+                            Planet.SCALE -= Planet.SCALE/2 
+                            for planet in planets:
+                                planet.radius-=planet.radius/2
+                        
+                    for planet in planets:
+                        planet.draw(WIN)
+                    pygame.display.update()
+                            
+                   
             elif event.type == pygame.MOUSEBUTTONUP:
                 moving = False
                       
         for planet in planets:
             planet.update_position(planets)
             planet.draw(WIN)
+    
         
         pygame.display.update()
     
