@@ -19,7 +19,7 @@ WHITE = (255, 255, 255)
 YELLOW = (255, 255, 0)
 BLUE = (100, 149, 237)
 RED = (188, 39, 50)
-DARK_GREY = (80, 71, 78)
+DARK_GRAY = (80, 71, 78)
 ORANGE = (233, 138, 30)
 BROWN = (255, 210, 160)
 DARK_BLUE = (0,0,153)
@@ -37,7 +37,7 @@ class Planet:
 
     
     
-    def __init__(self, x, y, radius, color, mass):
+    def __init__(self, x, y, radius, color, mass, name):
         self.x = x
         self.y = y
         self.radius = radius * self.PROPORTION
@@ -53,6 +53,7 @@ class Planet:
         self.x_vel = 0
         self.y_vel = 0
         self.max_length = False
+        self.name = name
         
     def draw(self, win):
         x = self.x * self.SCALE + WIDTH / 2
@@ -79,12 +80,16 @@ class Planet:
                 self.orbit.pop(0) # remove the line orbit as the moviment flows
             '''
 
-            
+        name_text = FONT.render(f"{self.name}", 1, WHITE)   
+        win.blit(name_text, (x - name_text.get_width()/2, y - 35))
+
         pygame.draw.circle(win, self.color, (x,y), self.radius)
         
         if not self.sun:
-            distance_text = FONT.render(f"{round(self.distance_to_sun/1000, 1)}km", 1, WHITE)
+            distance_text = FONT.render(f"{round(self.distance_to_sun/10**9, 2)} * 10^6 km", 1, WHITE)
             win.blit(distance_text, (x - distance_text.get_width()/2, y - distance_text.get_height()/2))
+        
+        
 
     def attraction(self, other):
         other_x, other_y = other.x, other.y
@@ -129,40 +134,41 @@ def main():
     
     # (x, y, radius, color, mass)
     
-    sun = Planet(0, 0, 35, YELLOW, 1.98892 * 10**30)
+    sun = Planet(0, 0, 35, YELLOW, 1.98892 * 10**30, "Sun")
     sun.sun = True
     
-    mercury = Planet(0.387 * Planet.AU, 0, 3, DARK_GREY, 0.330 * 10**24)
+    mercury = Planet(0.387 * Planet.AU, 0, 3, DARK_GRAY, 0.330 * 10**24, "Mercury")
     mercury.y_vel = -48.92 * 1000 # m/s
     
-    
-    venus = Planet(0.723 * Planet.AU, 0, 13, WHITE, 4868.5 * 10**21)
+    venus = Planet(0.723 * Planet.AU, 0, 13, WHITE, 4868.5 * 10**21, "Venus")
     venus.y_vel = -35.02 * 1000 # m/s
     
-    earth = Planet(-1 * Planet.AU, 0, 15, BLUE, 5973.6 * 10**21)
+    earth = Planet(-1 * Planet.AU, 0, 15, BLUE, 5973.6 * 10**21, "Earth")
     earth.y_vel = 29.783 * 1000 # m/s
     
-    mars = Planet(-1.524 * Planet.AU, 0, 10, RED, 641.85 * 10**21)
+    mars = Planet(-1.524 * Planet.AU, 0, 10, RED, 641.85 * 10**21, "Mars")
     mars.y_vel = 24.077 * 1000 # m/s
     
-    jupiter  = Planet(-5.203 * Planet.AU, 0, 23, ORANGE, 1898.6 * 10**21)
+    jupiter  = Planet(-5.203 * Planet.AU, 0, 23, ORANGE, 1898.6 * 10**21, "Jupiter")
     jupiter.y_vel = 13.05 * 1000 # m/s
     
-    saturn = Planet(-9.537 * Planet.AU, 0, 21, BROWN, 568460 * 10**21)
+    saturn = Planet(-9.537 * Planet.AU, 0, 21, BROWN, 568460 * 10**21, "Saturn")
     saturn.y_vel = 9.64 * 1000 # m/s
     
-    uranus = Planet(-19.23 * Planet.AU, 0, 17, CYAN, 86832 * 10**21)
+    uranus = Planet(-19.23 * Planet.AU, 0, 17, CYAN, 86832 * 10**21, "Uranus")
     uranus.y_vel = 6.81 * 1000 # m/s
     
-    neptune = Planet(-30.10 * Planet.AU, 0, 17, DARK_BLUE, 102430 * 10**21)
+    neptune = Planet(-30.10 * Planet.AU, 0, 17, DARK_BLUE, 102430 * 10**21, "Neptune")
     neptune.y_vel = 5.43 * 1000 # m/s
     
-    pluto = Planet(-39.3 * Planet.AU, 0, 3, LIGHT_GRAY, 13.105 * 10**21)
+    pluto = Planet(-39.3 * Planet.AU, 0, 3, LIGHT_GRAY, 13.105 * 10**21, "Pluto")
     pluto.y_vel = 4.72 * 1000 # m/s
     
+    sedna = Planet( -960 * Planet.AU, 0, 1000, CYAN, 1 * 10**21, "Sedna")
+    sedna.y_vel = 1.04 * 1000 # m/s
     
     
-    planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto]
+    planets = [sun, mercury, venus, earth, mars, jupiter, saturn, uranus, neptune, pluto, sedna]
     
     # glTranslatef(0.0, 0.0, -5.0)
     moving = True
